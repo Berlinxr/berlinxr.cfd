@@ -1,24 +1,55 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Çoluğunu Çocuğunu</title>
+    <title>Çoluğunu Çocuğunu Tamamla</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-        input { padding: 10px; width: 80%; font-size: 16px; }
-        h2 { margin-top: 20px; }
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        #container {
+            position: relative;
+            display: inline-block;
+        }
+
+        #text {
+            position: absolute;
+            top: 40px; /* Yazının dikey konumu */
+            left: 30px; /* Yazının yatay konumu */
+            color: black;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        #image {
+            width: 400px; /* Görsel boyutu */
+        }
     </style>
 </head>
+
 <body>
-    <h1>tamam abi senin çoluğunu çocuğunu...</h1>
-    <input type="text" id="userInput" placeholder="Bir şey yaz...">
-    <h2 id="output"></h2>
+    <h1>Çoluğunu Çocuğunu Tamamla</h1>
+
+    <input type="text" id="input" placeholder="Bir şey yaz...">
+    <button onclick="updateText()">Tamamla</button>
+
+    <div id="container">
+        <img id="image" src="kedi.jpeg" alt="Kedi">
+        <div id="text">tamam abi senin çoluğunu çocuğunu...</div>
+    </div>
 
     <script>
-        document.getElementById("userInput").addEventListener("input", function() {
-            document.getElementById("output").textContent = this.value;
-        });
+        function updateText() {
+            const input = document.getElementById('input').value;
+            const text = document.getElementById('text');
+            text.innerText = `tamam abi senin çoluğunu çocuğunu ${input}`;
+        }
     </script>
+
 </body>
+
 </html>
