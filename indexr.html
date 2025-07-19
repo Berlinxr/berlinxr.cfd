@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Berlin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo"><img src="logo.gif" alt="logogif" style="width:48px;height:48px; border-radius: 50%;"></div>
+            <ul class="nav-links">
+                <li><a href="#anasayfa">Anasayfa</a></li>
+                <li><a href="#hakkimizda">Hakkımızda</a></li>
+                <li><a href="projeler.html">Projeler</a></li>
+                <li><a href="#iletisim">İletişim</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="anasayfa" class="hero">
+        <div class="hero-text">
+            <h1>Hoşgeldiniz.</h1>
+          <a href="iletisim.html" class="moreinfo">İletişim</a>
+        </div>
+    </section>
+
+    <section id="hakkimizda" class="section">
+        <h2>Hakkımda</h2>
+        <p>Wexon Company, kar amacı gütmeyen bir girişim olarak çeşitli web siteleri geliştirir. Her projede özgün ve işlevsel çözümler sunarak, kullanıcıların ihtiyaçlarını karşılamaya odaklanır. Ticari beklentilerden bağımsız şekilde, yalnızca fayda sağlamak için çalışır. Yaratıcı projelerle, internet dünyasına katkı sağlamayı hedefler.</p>
+    </section>
+
+    <section id="iletisim" class="section">
+        <h2></h2>
+        <div class="i-card">
+            <div class="i-image">
+                <img src="logo.gif" alt="Berlin">
+            </div>
+            <div class="i-info">
+                <h3>İletişim</h3>
+                <p>Kullanıcıların oyunları grafik, oynanış ve hikâye gibi kategorilerde puanlayarak değerlendirme yapmalarını sağlayan modern bir web uygulamasıdır.</p>
+                <a href="github.com/MetinBaygun" class="button"><i class="fa-brands fa-github"></i></a>
+                <a href="https://discord.gg/6W8xqhTN27" class="button"><i class="fa-brands fa-discord"></i></a>
+                <a href="#" class="button" id="copyMailBtn"><i class="fa-solid fa-envelope"></i></a>
+            </div>
+        </div>
+    </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Onur Epbaygun. Tüm hakları saklıdır.</p>
+    </footer>
+
+    <script>
+        document.getElementById('copyMailBtn').addEventListener('click', function(e) {
+          e.preventDefault();
+          const mail = "berlinxr@proton.me"; // Kopyalanacak mail adresi
+          navigator.clipboard.writeText(mail).then(() => {
+            alert('Mail adresi kopyalandı: ' + mail);
+          }).catch(() => {
+            alert('Kopyalama başarısız oldu.');
+          });
+        });
+      </script>
+</body>
+</html>

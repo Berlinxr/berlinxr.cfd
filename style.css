@@ -7,7 +7,7 @@
 
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #0f0f0f;
+    background-color: #000000;
     color: #fff;
     line-height: 1.6;
 }
@@ -50,14 +50,14 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
-    background: linear-gradient(to bottom, #121212, #1e1e1e);
+    background: linear-gradient(to bottom, #000000, #000000);
     padding: 0 20px;
 }
 
 .hero-text h1 {
     font-size: 2.5rem;
     margin-bottom: 20px;
-    color: #00bcd4;
+    color: white;
 }
 
 .hero-text p {
@@ -81,7 +81,7 @@ body {
     margin: 0 auto;
 }
 
-//* Genel Ayarlar */
+/* Genel Ayarlar */
 * {
     margin: 0;
     padding: 0;
@@ -90,7 +90,7 @@ body {
 
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #0f0f0f;
+    background-color: #000000;
     color: #fff;
     line-height: 1.6;
 }
@@ -101,7 +101,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 20px 50px;
-    background-color: #121212;
+    background-color: #000000;
 }
 
 .navbar .logo {
@@ -126,7 +126,7 @@ body {
     color: #00bcd4;
 }
 
-/* Projeler Bölümü */
+/* projeler */
 .projects-section {
     padding: 50px 20px;
     text-align: center;
@@ -138,7 +138,7 @@ body {
     color: #00bcd4;
 }
 
-/* Proje Kartları */
+/* proje kartları */
 .projects-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -206,7 +206,7 @@ body {
 footer {
     text-align: center;
     padding: 20px 0;
-    background-color: #121212;
+    background-color: #000000;
     color: #777;
 }
 
@@ -222,4 +222,81 @@ footer {
 
 .moreinfo:hover {
   background-color: #008c9e;
+}
+
+/* İletişim Bölümü */
+.i-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.i-card {
+    align-items: center;
+    background-color: #000000;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+}
+
+.i-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgb(255, 255, 255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  
+  .i-image img {
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .i-info {
+    padding: 20px;
+    text-align: center;
+}
+
+.i-info h3 {
+    font-size: 2.1rem;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+i {
+    font-size: 24px;
+    color: #000000;
+}
+
+.i-info p {
+    margin-bottom: 15px;
+}
+
+.i-info .button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    padding: 0; /* padding varsa daireyi bozar */
+    background-color: #ffffff;
+    color: #fff;
+    text-decoration: none;
+    transition: background-color 0.3s;
+  }
+
+.i-info .button:hover {
+    background-color: #9d9d9d;
 }
