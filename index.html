@@ -33,7 +33,7 @@
     <script>
         document.getElementById('copyMailBtn').addEventListener('click', function(e) {
           e.preventDefault();
-          const mail = "berlinxr@proton.me"; // Kopyalanacak mail adresi
+          const mail = "berlinxr@proton.me"; 
           navigator.clipboard.writeText(mail).then(() => {
             alert('Mail adresi kopyalandı: ' + mail);
           }).catch(() => {
