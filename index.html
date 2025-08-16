@@ -27,7 +27,7 @@
     <h1>Berlin</h1>
     <div class="i-info">
     <a href="https://steamcommunity.com/id/berlxn" class="button"><i class="fa-brands fa-steam"></i></a>
-    <a href="https://youtube.com/@berlinfx" class="button"><i class="fa-brands fa-youtube"></i></a>
+    <a href="#" class="button" id="copyDiscordBtn"><i class="fa-brands fa-discord"></i></a>
     <a href="https://github.com/Berlinxr" class="button"><i class="fa-brands fa-github"></i></a>
     <a href="#" class="button" id="copyMailBtn"><i class="fa-solid fa-envelope"></i></a>
 </div>
@@ -53,7 +53,18 @@
     alert('Kopyalama başarısız oldu.');
   });
 });
+
+  document.getElementById('copyDiscordBtn').addEventListener('click', function(e) {
+  e.preventDefault();
+  const dcd = "bxrff"; 
+  navigator.clipboard.writeText(dcd).then(() => {
+    alert('Mail adresi kopyalandı: ' + dcd);
+  }).catch(() => {
+    alert('Kopyalama başarısız oldu.');
+  });
+});
 </script>
 
 </body>
 </html>
+
