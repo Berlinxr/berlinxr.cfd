@@ -1,0 +1,98 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: black;
+    overflow-x: hidden;
+}
+
+.video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.video-background video {
+    min-width: 100%;
+    min-height: 100%;
+    object-fit: cover;
+    opacity: 0.3;
+}
+
+.anasayfa {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+}
+
+    .anasayfa .photo {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.anasayfa .photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.anasayfa h1, .anasayfa p {
+    color: white;
+    margin: 5px 0;
+    text-shadow: 0 0 2px rgb(255, 255, 255), 0 0 3px rgb(255, 255, 255);
+
+}
+
+ p {
+    max-width: 800px;
+    text-align: left;
+ }
+
+.foto {
+    width: 35%;
+}
+
+.foto img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.anasayfa .i-info {
+    display: flex;
+    justify-content: center;
+    gap: 3px;
+    margin-top: 0px;
+}
+
+.anasayfa .i-info a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90px;
+    height: 90px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 34px;
+    transition: transform 0.3s, background-color 0.3s;
+    text-shadow: 0 0 2px rgb(255, 255, 255), 0 0 5px rgb(255, 255, 255);
+}
+
+.anasayfa .i-info a:hover {
+    transform: scale(1.2);
+}

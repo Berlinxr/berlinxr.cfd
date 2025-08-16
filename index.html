@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Berlin</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="stil.css">
+</head>
+<body>
+
+<div id="overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center;z-index:9999;">
+  <button id="startBtn" style="padding:20px 40px;font-size:24px;background:#000;color:#fff;border:none;border-radius:10px;cursor:pointer;">
+    Click to Continue
+  </button>
+</div>
+
+<div class="video-background">
+    <video loop playsinline muted>
+        <source src="video.mp4" type="video/mp4">
+        Tarayıcınız video etiketini desteklemiyor.
+    </video>
+</div>
+
+<div class="anasayfa">
+    <h1>Berlin</h1>
+    <div class="i-info">
+    <a href="https://steamcommunity.com/id/berlxn" class="button"><i class="fa-brands fa-steam"></i></a>
+    <a href="https://youtube.com/@berlinfx" class="button"><i class="fa-brands fa-youtube"></i></a>
+    <a href="https://github.com/Berlinxr" class="button"><i class="fa-brands fa-github"></i></a>
+    <a href="#" class="button" id="copyMailBtn"><i class="fa-solid fa-envelope"></i></a>
+</div>
+</div>
+
+<script>
+  const overlay = document.getElementById("overlay");
+  const startBtn = document.getElementById("startBtn");
+  const video = document.querySelector(".video-background video");
+
+  startBtn.addEventListener("click", () => {
+    overlay.style.display = "none";
+    video.muted = false; 
+    video.play();
+  });
+
+  document.getElementById('copyMailBtn').addEventListener('click', function(e) {
+  e.preventDefault();
+  const mail = "onur@notreally.xyz"; 
+  navigator.clipboard.writeText(mail).then(() => {
+    alert('Mail adresi kopyalandı: ' + mail);
+  }).catch(() => {
+    alert('Kopyalama başarısız oldu.');
+  });
+});
+</script>
+
+</body>
+</html>
