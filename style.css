@@ -300,3 +300,43 @@ i {
 .i-info .button:hover {
     background-color: #9d9d9d;
 }
+
+/* Sonradan Eklenenler */
+    .divform {
+        margin: auto;  
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); 
+        padding: 20px;
+        border: 2px solid #ccc;
+        border-radius: 12px;
+        max-width: 600px;
+    }
+        label, select, input {
+            display: block;
+            margin: 10px 0;
+            width: 100%;
+        }
+        #output {
+            background: #111;
+            color: #0f0;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        button {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #007bff;
+            color: #fff;
+            font-weight: bold;
+            width: 100%;
+        }
+        button:hover {
+            background: #0056b3;
+        }
