@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:ital,wght@0,500;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,500;1,500&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: black;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;   /* Eklendi: Dikey hizalama */
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    font-family: "Pacifico", cursive;
+    color: white;
+    background: none;
+    text-align: center;
+    font-size: 3em;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+    font-family: "Roboto", sans-serif;
+    font-size: 1.7em;
+    display: block;
+    margin-top: 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 5px; /* Çizgiyle yazı arasına boşluk eklendi */
+}
+
+/* Animasyonlu underline için pseudo-element */
+a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px; /* Kalınlık artırıldı */
+    background: white;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.4s cubic-bezier(.4,0,.2,1);
+}
+
+a:hover::after {
+    transform: scaleX(1);
+}
