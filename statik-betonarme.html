@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Statik ve Betonarme Hesap Soru ve Cevapları</title>
+<style>
+  body { font-family: Arial, sans-serif; line-height: 1.6; margin: 40px; color: #222; }
+  h1 { color: #003366; font-size: 28px; margin-bottom: 8px; }
+  h2 { color: #003366; font-size: 20px; margin-top: 24px; }
+  .qa p { margin: 8px 0; }
+  b { color: #000; }
+  hr { border: 0; height: 1px; background: #ccc; margin: 20px 0; }
+  .small { font-size: 0.9em; color: #555; }
+  @media (max-width: 600px) {
+    body { margin: 16px; }
+    h1 { font-size: 22px; }
+    h2 { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Sağlık Bakanlığı Ünvan Değişikliği - İnşaat Mühendisliği</h1>
+<p class="small">Statik ve Betonarme Hesap Soru ve Cevapları — Mülakat / Yazılı sınav hazırlığı için özet.</p>
+
+<h2>1. STATİK HESAPLAR</h2>
+<div class="qa">
+  <p><b>Soru:</b> Statik denge koşulları nelerdir?<br><b>Cevap:</b> ΣFx = 0, ΣFy = 0, ΣM = 0 → Düzlemdeki üç denge koşuludur.</p>
+
+  <p><b>Soru:</b> Basit kirişte yayılı yük momenti nasıl hesaplanır?<br><b>Cevap:</b> M<sub>max</sub> = wL²/8, V<sub>max</sub> = wL/2</p>
+
+  <p><b>Soru:</b> Ankastre kirişte orta noktadaki tekil yük momenti?<br><b>Cevap:</b> M<sub>max</sub> = PL/4</p>
+
+  <p><b>Soru:</b> Mesnet reaksiyonları nasıl bulunur?<br><b>Cevap:</b> Denge denklemleri (ΣM=0, ΣF_y=0) kullanılarak hesaplanır.</p>
+
+  <p><b>Soru:</b> Statikçe belirsiz sistem nedir?<br><b>Cevap:</b> Denge denklemleriyle çözülemeyen, ilave deformasyon/germen denklemleri gerektiren sistemlerdir (örn. sürekli kiriş, çerçeve).</p>
+
+  <p><b>Soru:</b> Etki çizgisi nedir?<br><b>Cevap:</b> Hareketli yüklerin belirli bir noktadaki moment, kesme veya reaksiyon üzerindeki etkisini gösterir; köprü ve taşıma yükü analizlerinde kullanılır.</p>
+
+  <p><b>Soru:</b> Kesme kuvveti–moment ilişkisi?<br><b>Cevap:</b> dM/dx = V ve dV/dx = -w (w: yayılı yük)</p>
+
+  <p><b>Soru:</b> Burkulma formülü nedir?<br><b>Cevap:</b> P<sub>cr</sub> = π² E I / (K L)² (Euler formülü; K: etkin uzunluk katsayısı)</p>
+
+  <p><b>Soru:</b> Kirişte defleksiyon nedir?<br><b>Cevap:</b> Yük etkisiyle kirişin düşey yer değiştirmesidir; servis sınırları genelde L/250 veya L/300 olarak verilir.</p>
+
+  <p><b>Soru:</b> Gerilme formülü nedir?<br><b>Cevap:</b> σ = F / A veya eğilmede σ = M·y / I</p>
+</div>
+
+<hr>
+
+<h2>2. BETONARME HESAPLAR</h2>
+<div class="qa">
+  <p><b>Soru:</b> Kesitte denge koşulu nedir?<br><b>Cevap:</b> Betonun basınç kuvveti C ile donatının çekme kuvveti T dengede olmalıdır: C = T.</p>
+
+  <p><b>Soru:</b> Moment kapasitesi nasıl bulunur?<br><b>Cevap:</b> M_R ≈ A_s · f_y · z (z ≈ 0.9 d olarak yaklaşık alınabilir). As: çekme donatı alanı, f_y: çelik akma gerilmesi, z: iç kuvvet kolu.</p>
+
+  <p><b>Soru:</b> Kesit türleri nelerdir (dengeli/az/çok donatılı)?<br><b>Cevap:</b> 
+    <ul>
+      <li><b>Dengeli kesit:</b> Beton ve çelik aynı anda sınır gerilimine ulaşır.</li>
+      <li><b>Az donatılı (çekme kontrollü):</b> Çelik önce akar → sünek davranış.</li>
+      <li><b>Çok donatılı (basınç kontrollü):</b> Beton ezilir → daha gevrek kırılma.</li>
+    </ul>
+  </p>
+
+  <p><b>Soru:</b> Beton sınıfları nelerdir (TS500)?<br><b>Cevap:</b> Örnek: C20/25, C25/30, C30/37 — ilk değer silindir dayanımı (MPa), ikinci değer küp dayanımı.</p>
+
+  <p><b>Soru:</b> Aderans nedir?<br><b>Cevap:</b> Donatı ile beton arasındaki yapışma/bağlanma etkisidir; yük aktarımı için gereklidir.</p>
+
+  <p><b>Soru:</b> Minimum donatı oranı neden gereklidir?<br><b>Cevap:</b> Çatlamaları kontrol etmek ve yapının sünek davranmasını sağlamak için belirli bir asgari donatı oranı TS500 ile zorunlu tutulur.</p>
+
+  <p><b>Soru:</b> Etriye görevi nedir?<br><b>Cevap:</b> Kirişlerde kesme kuvvetini karşılamak, donatıyı bir arada tutmak ve kolonda burkulmayı kontrol etmektir.</p>
+
+  <p><b>Soru:</b> Kolon donatı oranları nelerdir?<br><b>Cevap:</b> TS500 örneği: ρ<sub>min</sub>=0.01, ρ<sub>max</sub>=0.04 (brüt kesit alanına göre).</p>
+
+  <p><b>Soru:</b> Betonun elastisite modülü nasıl hesaplanır?<br><b>Cevap:</b> E_c ≈ 5000 √f_ck (MPa cinsinden; TS500 formülü).</p>
+
+  <p><b>Soru:</b> Donatı alanı hesabı nasıl yapılır?<br><b>Cevap:</b> A_s = M / (f_y · z) (ilk yaklaşım); uygun çap/adet seçilerek uygulamaya geçirilmeli ve kesit kontrolleri yapılmalıdır.</p>
+
+  <p><b>Soru:</b> Gerilme dağılımı nasıldır?<br><b>Cevap:</b> Eğilmede üst liflerde basınç, alt liflerde çekme oluşur; nötr eksen kesitte belirlenir ve donatı çekme bölgesinde yer alır.</p>
+
+  <p><b>Soru:</b> Beton örtü (beton örtüsü) kalınlığı nedir?<br><b>Cevap:</b> Yaklaşık değerler: iç mekan ≥2 cm, dış ortam ≥3–4 cm, temel ≥5 cm (TS500 ve uygulama şartlarına göre değişebilir).</p>
+
+  <p><b>Soru:</b> Güçlü kolon - zayıf kiriş prensibi nedir?<br><b>Cevap:</b> Deprem anında meydana gelebilecek sünek biçim değiştirmelerde kolonların kırılmadan önce davranış sergilemesi için kolon moment kapasitesinin, bağlı kirişlerin toplam moment kapasitesinden daha büyük olması hedeflenir.</p>
+
+  <p><b>Soru:</b> Sehim kontrolü nasıl yapılır?<br><b>Cevap:</b> Servis şartları için sehim sınırları kullanılır; örn. L/δ_max ≥ 250 (ayrıntılar proje şartlarına göre değişir).</p>
+
+  <p><b>Soru:</b> Donatı ankraj boyu formülü nedir?<br><b>Cevap:</b> l_b ≈ (φ · f_y) / (4 · τ_bd) (TS500'de verilen şartlara göre hesaplanır; madde referansları kontrol edilmeli).</p>
+</div>
+
+</body>
+</html>
