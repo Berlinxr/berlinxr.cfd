@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Web Windows Emülatör Simülasyonu</title>
+<style>
+  :root{
+    --bg:#0f1724; /* desktop background base */
+    --task:#0b1220;
+    --accent:#3b82f6;
+    --window:#f8fafc;
+    --win-title:#0f1724;
+    --shadow: 0 8px 30px rgba(2,6,23,0.6);
+    --glass: rgba(255,255,255,0.06);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  html,body{height:100%;margin:0;overflow:hidden;background:var(--bg);color:#e6eef8}
+  /* desktop wallpaper (simple gradient) */
+  .wallpaper{
+    position:fixed;inset:0;background:
+      radial-gradient(ellipse at 10% 10%, rgba(255,255,255,0.02), transparent 10%),
+      linear-gradient(180deg,#041026 0%, #07304a 60%, #07121b 100%);
+    display:flex;align-items:flex-start;padding:28px;box-sizing:border-box;
+  }
+
+  /* desktop icons */
+  .desktop { width:100%; display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start }
+  .icon {
+    width:88px; text-align:center; cursor:pointer; user-select:none;
+    color:#cfe7ff; font-size:13px;
+  }
+  .icon .pic{
+    width:64px;height:64px;border-radius:10px;
+    background:linear-gradient(135deg,#1f2937,#111827);
+    display:flex;align-items:center;justify-content:center;margin:0 auto 8px;
+    box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+  }
+
+  /* taskbar */
+  .taskbar {
+    position:fixed; left:0; right:0; bottom:0; height:44px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.25));
+    backdrop-filter: blur(6px); display:flex;align-items:center;padding:6px 10px;box-sizing:border-box;
+    gap:10px; border-top:1px solid rgba(255,255,255,0.03);
+  }
+  .start-btn{
+    height:32px;padding:0 12px;border-radius:6px;background:var(--glass);display:flex;align-items:center;gap:8px;cursor:pointer;
+    color:#dbeafe;font-weight:600;font-size:14px;
+  }
+  .taskbar .bar-icons{ display:flex; gap:8px; align-items:center; flex:1; padding-left:6px }
+  .task-icon{width:36px;height:36;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#cfe7ff}
+  .tray{display:flex;gap:6px;align-items:center;margin-left:auto;color:#accbe9;font-size:13px;padding-right:6px}
+
+  /* start menu */
+  .start-menu {
+    position:fixed; left:10px; bottom:54px; width:300px; padding:14px; box-sizing:border-box;
+    background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.22));
+    border-radius:10px; box-shadow:var(--shadow); display:none; gap:12px; color:#e6f3ff;
+  }
+  .start-menu .apps{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px }
+  .start-item{ background:rgba(255,255,255,0.03); padding:10px;border-radius:8px;text-align:center;font-size:13px;cursor:pointer }
+
+  /* Window */
+  .win {
+    position: absolute; width:560px; height:360px; background:var(--window); color:#0f1724; border-radius:8px;
+    box-shadow:var(--shadow); overflow:hidden; display:flex;flex-direction:column;
+    border:1px solid rgba(2,6,23,0.06);
+  }
+  .win .title {
+    height:38px; display:flex;align-items:center;justify-content:space-between;padding:0 10px;background:linear-gradient(180deg,#ffffff,#f1f5f9);
+    border-bottom:1px solid rgba(2,6,23,0.04);
+    cursor:grab; user-select:none;
+  }
+  .win .title .left{display:flex;gap:10px;align-items:center}
+  .win .title .controls{display:flex;gap:6px;align-items:center}
+  .ctrl{
+    width:34px;height:26px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;cursor:pointer;
+  }
+  .min{background:transparent}
+  .max{background:transparent}
+  .close{background:#ff6b6b;color:white}
+
+  .win .content{flex:1;padding:12px;overflow:auto;background:linear-gradient(180deg,#fff,#fbfdff)}
+
+  /* small helpers */
+  .hidden{display:none !important}
+  .task-active{box-shadow:0 6px 18px rgba(59,130,246,0.25); background:linear-gradient(180deg, rgba(59,130,246,0.12), rgba(59,130,246,0.06))}
+
+  /* resizer handle */
+  .resizer { position:absolute; right:4px; bottom:4px; width:12px;height:12px; cursor:se-resize; opacity:0.35; }
+
+  /* styling for simple apps */
+  .notepad textarea{width:100%;height:100%;border:1px solid rgba(2,6,23,0.06);box-sizing:border-box;padding:8px;font-family:monospace}
+  .explorer .folders{display:flex;gap:8px;flex-wrap:wrap}
+  .folder{width:120px;padding:8px;border-radius:8px;background:rgba(2,6,23,0.02);text-align:center;cursor:pointer}
+  /* responsive small */
+  @media (max-width:640px){
+    .win{width:90%;height:60%}
+    .start-menu{width:260px}
+  }
+
+</style>
+</head>
+<body>
+  <div class="wallpaper" id="desktopArea">
+    <div class="desktop" id="desktop">
+      <div class="icon" data-app="explorer" title="Dosyalar">
+        <div class="pic">📁</div>
+        <div>Dosyalar</div>
+      </div>
+      <div class="icon" data-app="notepad" title="Not Defteri">
+        <div class="pic">📝</div>
+        <div>Not Defteri</div>
+      </div>
+      <div class="icon" data-app="terminal" title="Terminal">
+        <div class="pic">💻</div>
+        <div>Terminal</div>
+      </div>
+      <div class="icon" data-app="settings" title="Ayarlar">
+        <div class="pic">⚙️</div>
+        <div>Ayarlar</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Start Menu -->
+  <div class="start-menu" id="startMenu" aria-hidden="true">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div><strong>Başlat</strong></div>
+      <div style="font-size:12px;opacity:0.8">Hoşgeldin</div>
+    </div>
+    <div class="apps" id="startApps">
+      <div class="start-item" data-app="explorer">Dosyalar</div>
+      <div class="start-item" data-app="notepad">Not Defteri</div>
+      <div class="start-item" data-app="terminal">Terminal</div>
+      <div class="start-item" data-app="calculator">Hesap Mak.</div>
+      <div class="start-item" data-app="settings">Ayarlar</div>
+      <div class="start-item" data-app="about">Hakkında</div>
+    </div>
+  </div>
+
+  <!-- Taskbar -->
+  <div class="taskbar" id="taskbar">
+    <div class="start-btn" id="startBtn">☰ Başlat</div>
+    <div class="bar-icons" id="taskIcons"></div>
+    <div class="tray">
+      <div id="timeLabel"></div>
+    </div>
+  </div>
+
+  <template id="windowTpl">
+    <div class="win" role="dialog" aria-modal="false" tabindex="0">
+      <div class="title">
+        <div class="left"><strong class="wtitle">Pencere</strong></div>
+        <div class="controls">
+          <div class="ctrl min" title="Küçült">─</div>
+          <div class="ctrl max" title="Simge durumuna küçült">▢</div>
+          <div class="ctrl close" title="Kapat">✕</div>
+        </div>
+      </div>
+      <div class="content"></div>
+      <div class="resizer">▤</div>
+    </div>
+  </template>
+
+<script>
+/* Simple desktop/window manager */
+const desktop = document.getElementById('desktop');
+const startBtn = document.getElementById('startBtn');
+const startMenu = document.getElementById('startMenu');
+const taskIcons = document.getElementById('taskIcons');
+const timeLabel = document.getElementById('timeLabel');
+const tpl = document.getElementById('windowTpl').content;
+let zIndexCounter = 100;
+let winCounter = 0;
+const apps = {
+  explorer: { title:'Dosyalar', create: createExplorer },
+  notepad: { title:'Not Defteri', create: createNotepad },
+  terminal: { title:'Terminal', create: createTerminal },
+  settings: { title:'Ayarlar', create: createSettings },
+  calculator: { title:'Hesap Makinesi', create: createCalculator },
+  about: { title:'Hakkında', create: createAbout }
+};
+
+function updateTime(){
+  const d = new Date();
+  timeLabel.textContent = d.toLocaleTimeString('tr-TR', {hour:'2-digit',minute:'2-digit'});
+}
+setInterval(updateTime,1000);
+updateTime();
+
+/* Start menu toggle */
+startBtn.addEventListener('click', e=>{
+  startMenu.style.display = startMenu.style.display === 'flex' ? 'none' : 'flex';
+  startMenu.setAttribute('aria-hidden', startMenu.style.display === 'none');
+});
+
+/* Desktop icon double-click => open app */
+desktop.addEventListener('dblclick', e=>{
+  const icon = e.target.closest('.icon');
+  if(icon && icon.dataset.app) openApp(icon.dataset.app);
+});
+/* Also allow single click on start items */
+document.getElementById('startApps').addEventListener('click', e=>{
+  const it = e.target.closest('[data-app]');
+  if(it) openApp(it.dataset.app);
+  startMenu.style.display = 'none';
+});
+
+/* create taskbar icon */
+function addTaskIcon(winEl, id, title){
+  const btn = document.createElement('div');
+  btn.className = 'task-icon';
+  btn.textContent = title[0] || '◻';
+  btn.title = title;
+  btn.dataset.win = id;
+  taskIcons.appendChild(btn);
+  btn.addEventListener('click', ()=>{
+    toggleMinimize(winEl, btn);
+  });
+  return btn;
+}
+
+/* open application by id */
+function openApp(appId){
+  const app = apps[appId];
+  if(!app) return alert('Uygulama bulunamadı: '+appId);
+  const win = tpl.cloneNode(true).querySelector('.win');
+  const id = 'win'+(++winCounter);
+  win.dataset.id = id;
+  win.querySelector('.wtitle').textContent = app.title;
+  win.querySelector('.content').appendChild(app.create());
+  document.body.appendChild(win);
+  // placement
+  win.style.left = (60 + (winCounter*20))+'px';
+  win.style.top = (40 + (winCounter*12))+'px';
+  bringToFront(win);
+  // task icon
+  const tbtn = addTaskIcon(win, id, app.title);
+  win.dataset.task = tbtn;
+  // events
+  setupWindowControls(win, tbtn);
+  makeDraggable(win, win.querySelector('.title'));
+  makeResizable(win, win.querySelector('.resizer'));
+  win.addEventListener('mousedown', ()=>bringToFront(win));
+  return win;
+}
+
+/* Window controls */
+function setupWindowControls(win, taskBtn){
+  const min = win.querySelector('.min');
+  const max = win.querySelector('.max');
+  const close = win.querySelector('.close');
+  min.onclick = ()=>toggleMinimize(win, taskBtn);
+  max.onclick = ()=>maximizeRestore(win);
+  close.onclick = ()=>closeWindow(win, taskBtn);
+}
+
+/* Bring window to front */
+function bringToFront(win){
+  zIndexCounter++;
+  win.style.zIndex = zIndexCounter;
+  // highlight task icon
+  const all = Array.from(taskIcons.children);
+  all.forEach(c=>c.classList.toggle('task-active', c===win.dataset.task));
+}
+
+/* Minimize toggle */
+function toggleMinimize(win, taskBtn){
+  if(win.classList.contains('minimized')){
+    win.classList.remove('minimized');
+    win.style.display = 'block';
+    bringToFront(win);
+  } else {
+    win.classList.add('minimized');
+    win.style.display = 'none';
+  }
+}
+
+/* Close */
+function closeWindow(win, taskBtn){
+  if(taskBtn && taskBtn.parentNode) taskBtn.remove();
+  win.remove();
+}
+
+/* maximize/restore */
+function maximizeRestore(win){
+  if(win.dataset.maxed === '1'){
+    // restore
+    win.style.left = win.dataset.prevLeft;
+    win.style.top = win.dataset.prevTop;
+    win.style.width = win.dataset.prevW;
+    win.style.height = win.dataset.prevH;
+    win.dataset.maxed = '0';
+  } else {
+    win.dataset.prevLeft = win.style.left;
+    win.dataset.prevTop = win.style.top;
+    win.dataset.prevW = win.style.width;
+    win.dataset.prevH = win.style.height;
+    win.style.left = '8px';
+    win.style.top = '8px';
+    win.style.width = (window.innerWidth-16)+'px';
+    win.style.height = (window.innerHeight-80)+'px';
+    win.dataset.maxed = '1';
+    bringToFront(win);
+  }
+}
+
+/* Draggable windows */
+function makeDraggable(el, handle){
+  let dragging=false, ox=0, oy=0, sx=0, sy=0;
+  handle.addEventListener('mousedown', (e)=>{
+    dragging=true; ox = e.clientX; oy = e.clientY;
+    sx = parseInt(getComputedStyle(el).left || '0'); sy = parseInt(getComputedStyle(el).top || '0');
+    handle.style.cursor='grabbing';
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove', (e)=>{
+    if(!dragging) return;
+    let nx = sx + (e.clientX - ox);
+    let ny = sy + (e.clientY - oy);
+    // keep inside viewport
+    nx = Math.max(4, Math.min(nx, window.innerWidth - el.offsetWidth - 4));
+    ny = Math.max(4, Math.min(ny, window.innerHeight - el.offsetHeight - 64));
+    el.style.left = nx + 'px';
+    el.style.top = ny + 'px';
+  });
+  window.addEventListener('mouseup', ()=>{ dragging=false; handle.style.cursor='grab'; });
+  // touch support
+  handle.addEventListener('touchstart',(e)=>{
+    dragging=true;
+    const t=e.touches[0];
+    ox=t.clientX; oy=t.clientY;
+    sx = parseInt(getComputedStyle(el).left || '0'); sy = parseInt(getComputedStyle(el).top || '0');
+  },{passive:true});
+  window.addEventListener('touchmove',(e)=>{
+    if(!dragging) return;
+    const t=e.touches[0];
+    let nx = sx + (t.clientX - ox);
+    let ny = sy + (t.clientY - oy);
+    nx = Math.max(4, Math.min(nx, window.innerWidth - el.offsetWidth - 4));
+    ny = Math.max(4, Math.min(ny, window.innerHeight - el.offsetHeight - 64));
+    el.style.left = nx + 'px';
+    el.style.top = ny + 'px';
+  },{passive:true});
+  window.addEventListener('touchend',()=>dragging=false);
+}
+
+/* Resizable */
+function makeResizable(el, handle){
+  let resizing=false, startW, startH, startX, startY;
+  handle.addEventListener('mousedown',(e)=>{
+    resizing=true;
+    startW = el.offsetWidth; startH = el.offsetHeight;
+    startX = e.clientX; startY = e.clientY;
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove',(e)=>{
+    if(!resizing) return;
+    const nx = Math.max(240, startW + (e.clientX - startX));
+    const ny = Math.max(160, startH + (e.clientY - startY));
+    el.style.width = nx + 'px';
+    el.style.height = ny + 'px';
+  });
+  window.addEventListener('mouseup',()=>resizing=false);
+  // touch
+  handle.addEventListener('touchstart',(e)=>{
+    resizing=true;
+    const t=e.touches[0];
+    startW = el.offsetWidth; startH = el.offsetHeight;
+    startX = t.clientX; startY = t.clientY;
+  },{passive:true});
+  window.addEventListener('touchmove',(e)=>{
+    if(!resizing) return;
+    const t=e.touches[0];
+    const nx = Math.max(240, startW + (t.clientX - startX));
+    const ny = Math.max(160, startH + (t.clientY - startY));
+    el.style.width = nx + 'px';
+    el.style.height = ny + 'px';
+  },{passive:true});
+  window.addEventListener('touchend',()=>resizing=false);
+}
+
+/* ===== Simple app implementations ===== */
+
+function createExplorer(){
+  const root = document.createElement('div');
+  root.className = 'explorer';
+  const path = document.createElement('div'); path.style.marginBottom='8px'; path.textContent='Bu bilgisayar > Belgeler';
+  const folders = document.createElement('div'); folders.className='folders';
+  ['Belgeler','Resimler','Müzik','Videolar','Projeler'].forEach(n=>{
+    const f = document.createElement('div'); f.className='folder';
+    f.textContent = n;
+    folders.appendChild(f);
+    f.addEventListener('dblclick', ()=>alert(n+' klasörü (simülasyon)'));
+  });
+  root.appendChild(path); root.appendChild(folders);
+  return root;
+}
+
+function createNotepad(){
+  const root = document.createElement('div');
+  root.className='notepad';
+  const ta = document.createElement('textarea');
+  ta.placeholder = 'Notunu buraya yaz... (otomatik kaydetmez)';
+  root.appendChild(ta);
+  return root;
+}
+
+function createTerminal(){
+  const root = document.createElement('div');
+  root.style.fontFamily='monospace';
+  const out = document.createElement('div'); out.style.height='300px'; out.style.overflow='auto'; out.style.background='#001220'; out.style.color='#9fe8ff'; out.style.padding='8px'; out.style.borderRadius='6px';
+  const input = document.createElement('input'); input.style.width='100%'; input.style.boxSizing='border-box'; input.style.marginTop='8px';
+  input.placeholder='komut gir (örnek: tarih, echo merhaba)';
+  out.innerHTML = '<div>&gt; Terminal başlatıldı. Yardım için "help" yazın.</div>';
+  input.addEventListener('keydown',(e)=>{
+    if(e.key==='Enter'){
+      const cmd = input.value.trim();
+      out.innerHTML += '<div style="color:#cfe8ff">> '+escapeHtml(cmd)+'</div>';
+      handleCmd(cmd,out);
+      out.scrollTop = out.scrollHeight;
+      input.value='';
+    }
+  });
+  root.appendChild(out); root.appendChild(input);
+  return root;
+}
+function handleCmd(cmd,out){
+  if(!cmd) return;
+  const a = cmd.split(' ');
+  if(a[0]==='help'){ out.innerHTML += '<div>yardım: tarih, echo, clear, about</div>'; }
+  else if(a[0]==='tarih' || a[0]==='date'){ out.innerHTML += '<div>'+new Date().toString()+'</div>'; }
+  else if(a[0]==='echo'){ out.innerHTML += '<div>'+escapeHtml(a.slice(1).join(' '))+'</div>'; }
+  else if(a[0]==='clear'){ out.innerHTML = ''; }
+  else if(a[0]==='about'){ out.innerHTML += '<div>Tarayıcı tabanlı Windows simülatörü</div>'; }
+  else { out.innerHTML += '<div>Komut bulunamadı: '+escapeHtml(cmd)+'</div>'; }
+}
+function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function createSettings(){
+  const root = document.createElement('div');
+  root.innerHTML = '<h3>Ayarlar (simülasyon)</h3><p>Duvar kağıdı ve tema ayarları burada olurdu.</p>';
+  return root;
+}
+
+function createCalculator(){
+  const root = document.createElement('div');
+  const display = document.createElement('input'); display.style.width='100%'; display.style.fontSize='20px'; display.style.textAlign='right'; display.readOnly=true; display.value='0';
+  const pad = document.createElement('div'); pad.style.display='grid'; pad.style.gridTemplateColumns='repeat(4,1fr)'; pad.style.gap='6px'; pad.style.marginTop='8px';
+  const keys = ['7','8','9','/','4','5','6','*','1','2','3','-','0','.','=','+'];
+  keys.forEach(k=>{
+    const b = document.createElement('button'); b.textContent=k; b.style.padding='12px'; b.style.fontSize='16px'; b.style.cursor='pointer';
+    b.addEventListener('click', ()=>onKey(k));
+    pad.appendChild(b);
+  });
+  root.appendChild(display); root.appendChild(pad);
+  let expr = '';
+  function onKey(k){
+    if(k==='='){ try{ expr = String(eval(expr)); display.value=expr; }catch(e){ display.value='Err'; expr=''; } return; }
+    if(k==='/' || k==='*' || k==='-' || k==='+'){ expr += k; display.value=expr; return; }
+    expr += k; display.value=expr;
+  }
+  return root;
+}
+
+function createAbout(){
+  const root = document.createElement('div');
+  root.innerHTML = `<h3>Web Windows Simülatörü</h3>
+  <p>Bu, tarayıcıda çalışan hafif bir "Windows benzeri" arayüz simülasyonudur. Pencereler taşınabilir, yeniden boyutlandırılabilir ve görev çubuğundan yönetilebilir.</p>
+  <p>Çalıştırma: Masaüstündeki ikonlara çift tıkla ya da Başlat menüsünden aç.</p>`;
+  return root;
+}
+
+/* Simple keyboard handling: Ctrl+N new Notepad, Esc closes topmost window */
+window.addEventListener('keydown', (e)=>{
+  if(e.ctrlKey && e.key.toLowerCase() === 'n'){ openApp('notepad'); e.preventDefault(); }
+  if(e.key === 'Escape'){ // close topmost
+    const wins = Array.from(document.querySelectorAll('.win')).sort((a,b)=>parseInt(b.style.zIndex||0)-parseInt(a.style.zIndex||0));
+    if(wins.length) closeWindow(wins[0], wins[0].dataset.task && document.querySelector(`[data-win="${wins[0].dataset.id}"]`));
+  }
+});
+
+/* Accessibility: click desktop to hide start menu */
+document.body.addEventListener('click', (e)=>{
+  if(!e.target.closest('.start-menu') && !e.target.closest('#startBtn')) startMenu.style.display='none';
+});
+
+/* Add double-click handlers for desktop icons via data-app attribute on click */
+document.querySelectorAll('[data-app]').forEach(el=>{
+  el.addEventListener('click', (e)=>{
+    // single click selects (visual not implemented), dblclick to open as above
+  });
+});
+
+/* Nice: double-click speed fallback for mobile: single tap opens after short delay if quickly tapped twice isn't available */
+let lastTap = 0;
+desktop.addEventListener('click',(e)=>{
+  const icon = e.target.closest('.icon');
+  if(!icon) return;
+  const now = Date.now();
+  if(now - lastTap < 350){ openApp(icon.dataset.app); }
+  lastTap = now;
+});
+
+/* Keyboard focus outline for windows */
+document.addEventListener('focusin',(e)=>{
+  const win = e.target.closest('.win');
+  if(win) bringToFront(win);
+});
+
+/* initial example windows */
+openApp('about');
+
+</script>
+</body>
+</html>
