@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'Dalgona Milk';
-    src: url('fonts/TkachenkoSketch4F-Bold.ttf') format('opentype');
+    src: url('fonts/moms_typewriter.ttf') format('opentype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -96,14 +96,14 @@ body {
 }
 
 .top-bar-btn.primary {
-    background: #36038f;
-    border-color: #36038f;
+    background: #8f0303;
+    border-color: #8f0303;
     box-shadow: 0 0 15px rgba(143, 3, 3, 0.6), 0 0 30px rgba(143, 3, 3, 0.3);
 }
 
 .top-bar-btn.primary:hover {
-    background: #36038f;
-    border-color: #36038f;
+    background: #8f0303;
+    border-color: #8f0303;
     box-shadow: 0 0 20px rgba(143, 3, 3, 0.8), 0 0 40px rgba(255, 78, 78, 0.925);
 }
 
@@ -130,16 +130,18 @@ body {
 }
 
 .profile-container {
-    background: rgba(54, 3, 143, 0.3);
-    backdrop-filter: blur(20px);
+    margin-left: auto;
+    margin-right: auto;
+    background: rgba(143, 3, 3, 0.3);
+    backdrop-filter: blur(3px);
     border-radius: 25px;
     padding: 48px 36px 48px;
-    border: 2px solid rgba(54, 3, 143, 0.5);
+    border: 2px solid rgba(143, 3, 3, 0.5);
     animation: fadeInUp 1s ease-out;
     width: 100%;
     max-width: 600px;
     flex-shrink: 0;
-    box-shadow: 0 0 30px rgba(54, 3, 143, 0.4), 0 0 60px rgba(54, 3, 143, 0.2);
+    box-shadow: 0 0 30px rgba(143, 3, 3, 0.4), 0 0 60px rgba(143, 3, 3, 0.2);
     min-height: 570px;
     overflow: visible;
     position: relative;
@@ -159,7 +161,7 @@ body {
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, #ea6666, #a24b4b);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -798,7 +800,7 @@ body {
 }
 
 .join-btn {
-    background: #5865F2;
+    background: #f25858;
     color: white;
     border: none;
     border-radius: 8px;
@@ -812,7 +814,7 @@ body {
 }
 
 .join-btn:hover {
-    background: #4752C4;
+    background: #c44747;
     transform: translateY(-1px);
 }
 
@@ -824,6 +826,7 @@ body {
     z-index: 100000;
     display: grid;
     grid-template-columns: auto 1fr auto;
+    margin-bottom: 20px;
     grid-template-rows: auto auto;
     grid-column-gap: 12px;
     grid-row-gap: 6px;
@@ -958,7 +961,7 @@ body {
     background: rgba(255, 255, 255, 0.07);
     border: 2px solid rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(20px);
-    box-shadow: 0 0 30px rgba(54, 3, 143, 0.35), 0 0 60px rgba(54, 3, 143, 0.2);
+    box-shadow: 0 0 30px rgba(143, 3, 3, 0.35), 0 0 60px rgba(54, 3, 143, 0.2);
     overflow: visible;
     line-height: 0;
     font-size: 0;
@@ -1276,7 +1279,7 @@ body {
 }
 
 .discord-link:hover {
-    color: #5865F2;
+    color: #f25858;
 }
 
 .discord-link::before {
