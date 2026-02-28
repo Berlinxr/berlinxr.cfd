@@ -1,0 +1,54 @@
+@property --rotate {
+  syntax: "<angle>";
+  initial-value: 132deg;
+  inherits: false;
+}
+
+:root {
+  --card-height: auto;
+  --card-width: 380px;
+}
+
+.card {
+  background: #191c29;
+  width: var(--card-width);
+  padding: 2rem;
+  position: relative;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 12px;
+  background: linear-gradient(
+    var(--rotate),
+    #5ddcff,
+    #3c67e3 43%,
+    #4e00c2
+  );
+  z-index: -1;
+  animation: spin 3s linear infinite;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #191c29;
+  border-radius: 10px;
+  z-index: -1;
+}
+
+@keyframes spin {
+  0% {
+    --rotate: 0deg;
+  }
+  100% {
+    --rotate: 360deg;
+  }
+}
