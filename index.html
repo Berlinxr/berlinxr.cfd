@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Berlin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #000;
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    #giris {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #000;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 100;
+      transition: opacity 0.9s ease;
+    }
+    #giris span {
+      color: #fff;
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      animation: blink 2.2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:0.35} 50%{opacity:1} }
+    #giris.hidden { opacity: 0; pointer-events: none; }
+
+    #main-content {
+      min-height: 100vh;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 32px 16px;
+      opacity: 0;
+      transition: opacity 0.9s ease 0.5s;
+      overflow-y: auto;
+    }
+
+    #main-content.visible {
+      opacity: 1; 
+    }
+
+    #ses-btn {
+      position: fixed; top: 16px; left: 16px;
+      width: 44px; height: 44px;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: #aaa; font-size: 16px;
+      z-index: 50;
+      transition: background 0.2s, color 0.2s;
+    }
+    #ses-btn:hover { background: #252525; color: #fff; }
+
+    .profile-card {
+      background: #000;
+      border-radius: 20px;
+      padding: 30px 48px 24px;
+      width: 100%;
+      max-width: 640px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow:
+        0 0 40px 6px rgba(255,255,255,0.12),
+        0 0 90px 24px rgba(255,255,255,0.07),
+        inset 0 0 0 1px rgba(255,255,255,0.04);
+    }
+
+    .avatar-wrap {
+      position: relative;
+      width: 96px; height: 96px;
+      margin-bottom: 16px;
+    }
+    .avatar-img {
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      position: relative;
+      z-index: 1;
+    }
+    .deco-img {
+      position: absolute;
+      top: -16px; left: -16px;
+      width: 128px; height: 128px;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .avatar-glow {
+      position: absolute;
+      top: -8px; left: -8px;
+      width: 112px; height: 112px;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .status-dot {
+      position: absolute;
+      bottom: 4px; right: 4px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 2.5px solid #000;
+      z-index: 3;
+      transition: background 0.4s, box-shadow 0.4s;
+    }
+    .status-dot.online  { background: #23a55a; box-shadow: 0 0 6px #23a55a; }
+    .status-dot.idle    { background: #f0b232; box-shadow: 0 0 6px #f0b232; }
+    .status-dot.dnd     { background: #f23f43; box-shadow: 0 0 6px #f23f43; }
+    .status-dot.offline { background: #80848e; }
+
+    .profile-name {
+      color: #fff;
+      font-size: 29px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.679);
+      font-family: "DynaPuff", system-ui;
+      font-optical-sizing: auto;
+      font-weight: 100;
+      font-style: normal;
+      font-variation-settings: "wdth" 100;
+    }
+
+    .badge-pill {
+      display: flex;
+      align-items: center;
+      background: #000000;
+      border-radius: 999px;
+      padding: 5px 16px;
+      margin-bottom: 22px;
+      border: 1px solid #252528;
+    }
+    .badge-item {
+      position: relative;
+      cursor: default;
+      display: flex;
+      align-items: center;
+      font-size: 17px;
+      padding: 0 10px;
+    }
+    .badge-item + .badge-item { border-left: 1px solid #2e2e32; }
+    .badge-tooltip {
+      position: absolute;
+      bottom: calc(100% + 9px);
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      background: #161618;
+      border: 1px solid #2a2a2e;
+      color: #ccc;
+      font-size: 11px;
+      white-space: nowrap;
+      padding: 5px 11px;
+      border-radius: 8px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.18s, transform 0.18s;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.7);
+      z-index: 20;
+    }
+    .badge-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%; left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: #2a2a2e;
+    }
+    .badge-item:hover .badge-tooltip {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .social-row { display: flex; gap: 20px; align-items: center; }
+    .social-link {
+      color: #fff;
+      font-size: 20px;
+      text-decoration: none;
+      transition: transform 0.2s, text-shadow 0.2s;
+      text-shadow:
+        0 0 8px rgba(255,255,255,0.9),
+        0 0 20px rgba(255,255,255,0.6),
+        0 0 40px rgba(255,255,255,0.4);
+    }
+    .social-link:hover {
+      transform: scale(1.2) translateY(-2px);
+      text-shadow:
+        0 0 12px rgba(255,255,255,1),
+        0 0 28px rgba(255,255,255,0.8),
+        0 0 55px rgba(255,255,255,0.5);
+    }
+    .view-count {
+      margin-top: 14px;
+      align-self: flex-start;
+      color: #444;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .bottom-row {
+      display: flex;
+      gap: 14px;
+      width: 100%;
+      max-width: 640px;
+    }
+
+    .music-player {
+      background: #000;
+      border-radius: 20px;
+      padding: 14px 16px;
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      box-shadow:
+        0 0 20px 3px rgba(255,255,255,0.05),
+        inset 0 0 0 1px rgba(255,255,255,0.04);
+    }
+    .music-top { display: flex; align-items: center; gap: 10px; }
+    .music-icon {
+      width: 40px; height: 40px;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 1px solid #1e1e1e;
+    }
+    .music-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .music-info { flex: 1; min-width: 0; }
+    .music-title { color: #fff; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .music-artist { color: #555; font-size: 10px; margin-top: 1px; }
+    .progress-wrap { display: flex; align-items: center; gap: 6px; }
+    .progress-time { color: #555; font-size: 10px; min-width: 24px; }
+    .progress-bar { flex: 1; height: 3px; background: #222; border-radius: 2px; cursor: pointer; }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #c9c9c9, #fff);
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.3s linear;
+    }
+    .controls { display: flex; align-items: center; justify-content: center; gap: 14px; }
+    .ctrl-btn {
+      background: none; border: none;
+      color: #666; cursor: pointer; padding: 2px;
+      font-size: 14px;
+      transition: color 0.2s, text-shadow 0.2s;
+    }
+    .ctrl-btn:hover { color: #fff; text-shadow: 0 0 8px rgba(255,255,255,0.6); }
+    .ctrl-btn.play-pause { font-size: 18px; color: #fff; }
+
+    .discord-card {
+      background: #000;
+      border-radius: 20px;
+      padding: 14px 16px;
+      width: 220px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      box-shadow:
+        0 0 20px 3px rgba(255,255,255,0.05),
+        inset 0 0 0 1px rgba(255,255,255,0.04);
+    }
+    .dc-header {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .dc-logo { color: #5865f2; font-size: 15px; }
+    .dc-label {
+      color: #444;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .live-indicator {
+      margin-left: auto;
+      display: none;
+      align-items: center;
+      gap: 3px;
+    }
+    .live-indicator span {
+      font-size: 9px;
+      color: #23a55a;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    @keyframes live-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .live-dot {
+      width: 5px; height: 5px;
+      background: #23a55a;
+      border-radius: 50%;
+      animation: live-pulse 1.8s ease-in-out infinite;
+    }
+
+    .dc-user-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      background: #0d0d0d;
+      border-radius: 10px;
+      padding: 7px 9px;
+      border: 1px solid #1a1a1a;
+    }
+    .dc-avatar-wrap {
+      position: relative;
+      width: 34px; height: 34px;
+      flex-shrink: 0;
+    }
+    .dc-avatar-img {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      position: relative;
+      z-index: 1;
+    }
+    .dc-deco-img {
+      position: absolute;
+      top: -6px; left: -6px;
+      width: 46px; height: 46px;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .dc-user-dot {
+      position: absolute;
+      bottom: 0px; right: 0px;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      border: 2px solid #0d0d0d;
+      z-index: 3;
+      transition: background 0.4s, box-shadow 0.4s;
+    }
+    .dc-user-dot.online  { background: #23a55a; box-shadow: 0 0 4px #23a55a; }
+    .dc-user-dot.idle    { background: #f0b232; box-shadow: 0 0 4px #f0b232; }
+    .dc-user-dot.dnd     { background: #f23f43; box-shadow: 0 0 4px #f23f43; }
+    .dc-user-dot.offline { background: #80848e; }
+
+    .dc-user-info { flex: 1; min-width: 0; }
+    .dc-username {
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .dc-status-text { color: #555; font-size: 10px; margin-top: 1px; }
+
+    .dc-activity { display: flex; flex-direction: column; gap: 4px; }
+    .dc-activity-type { color: #444; font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .dc-activity-name { color: #fff; font-size: 11px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dc-activity-detail { color: #555; font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; }
+    .dc-no-activity { color: #333; font-size: 10px; text-align: center; padding: 6px 0; }
+
+    .dc-spotify {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: #0a0a0a;
+      border-radius: 8px;
+      padding: 6px 8px;
+      border: 1px solid #1a1a1a;
+    }
+    .dc-spotify-art { width: 28px; height: 28px; border-radius: 4px; object-fit: cover; flex-shrink: 0; }
+    .dc-spotify-info { flex: 1; min-width: 0; }
+    .dc-spotify-track { color: #1db954; font-size: 10px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dc-spotify-artist { color: #555; font-size: 9px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+  </style>
+</head>
+<body>
+
+<div id="giris" onclick="enterSite()">
+  <span>click to enter...</span>
+</div>
+
+<div id="main-content">
+
+  <button id="ses-btn" onclick="toggleMute()" title="Ses">
+    <i class="fa fa-volume-up" id="vol-icon"></i>
+  </button>
+
+
+
+  <div class="profile-card">
+    <div class="avatar-wrap">
+      <div class="avatar-glow"></div>
+      <img class="avatar-img"
+        src="ogeler/IMG_2882.jpg"
+        alt="avatar">
+      <img class="deco-img"
+        src="ogeler/deco.gif"
+        alt="deco">
+    </div>
+
+    <div class="profile-name">Berlin</div>
+
+    <div class="badge-pill">
+      <div class="badge-item">
+        <img src="https://berlinxr.cfd/pp.jpg" alt="" style="width:20px;height:20px;border-radius:50%;">
+        <div class="badge-tooltip">BXR.cfd</div>
+      </div>
+      <div class="badge-item">
+        <img src="twitch.png" alt="" style="width:20px;height:20px;border-radius:50%;">
+        <div class="badge-tooltip">BLASO</div>
+      </div>
+      <div class="badge-item">
+        <img src="vionara logo.gif" alt="" style="width:20px;height:20px;border-radius:50%;">
+        <div class="badge-tooltip">VIONARA</div>
+      </div>
+    </div>
+
+    <div class="social-row">
+      <a href="https://github.com/berlinxr" class="social-link" title="GitHub"><i class="fab fa-github"></i></a>
+      <a href="https://steamcommunity.com/id/berlxn" class="social-link" title="Steam"><i class="fab fa-steam"></i></a>
+      <a href="mailto:onur@berlinxr.cfd" class="social-link" title="E-posta"><i class="fa fa-envelope"></i></a>
+    </div>
+  </div>
+
+  <div class="bottom-row">
+
+    <div class="music-player">
+      <div class="music-top">
+        <div class="music-icon">
+          <img src="ogeler/unnamed.jpg" alt="">
+        </div>
+        <div class="music-info">
+          <div class="music-title" id="track-title">;</div>
+          <div class="music-artist" id="track-artist">Berlin</div>
+        </div>
+      </div>
+      <div class="progress-wrap">
+        <span class="progress-time" id="curr-time">0:00</span>
+        <div class="progress-bar" id="prog-bar" onclick="seekTrack(event)">
+          <div class="progress-fill" id="prog-fill"></div>
+        </div>
+        <span class="progress-time" id="dur-time">0:00</span>
+      </div>
+      <div class="controls">
+        <button class="ctrl-btn" onclick="prevTrack()"><i class="fa fa-step-backward"></i></button>
+        <button class="ctrl-btn play-pause" id="play-btn" onclick="togglePlay()"><i class="fa fa-pause"></i></button>
+        <button class="ctrl-btn" onclick="nextTrack()"><i class="fa fa-step-forward"></i></button>
+      </div>
+    </div>
+
+    <div class="discord-card">
+
+
+      <div class="dc-user-row">
+        <div class="dc-avatar-wrap">
+          <img class="dc-avatar-img"
+            src="ogeler/IMG_2882.jpg"
+            alt="avatar">
+          <img class="dc-deco-img"
+            src="ogeler/deco.gif"
+            alt="deco">
+          <div class="dc-user-dot offline" id="dc-user-dot"></div>
+        </div>
+        <div class="dc-user-info">
+          <div class="dc-username">xrberlin</div>
+          <div class="dc-status-text" id="dc-status-text">bağlanıyor...</div>
+        </div>
+      </div>
+
+      <div class="dc-activity" id="dc-activity">
+        <div class="dc-no-activity">Aktivite yok</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<audio id="audio-player" preload="auto"></audio>
+
+<script>
+  const tracks = [
+    { src: "ogeler/sarki.mp3", title: "HANNAH MONTANA", artist: "2run & D3" }
+    // { src: "sarki.mp3", title: "Şarkı Adı", artist: "Sanatçı" },
+  ];
+
+  let currentIdx = 0, playing = false, muted = false;
+  const audio = document.getElementById('audio-player');
+
+  function enterSite() {
+    document.getElementById('giris').classList.add('hidden');
+    setTimeout(() => {
+      document.body.style.overflow = 'auto';
+      document.getElementById('main-content').classList.add('visible');
+      animateViewCount();
+      if (tracks.length > 0) loadTrack(0, true);
+      startLanyard();
+    }, 100);
+  }
+
+  function loadTrack(idx, autoplay = false) {
+    if (!tracks[idx]) return;
+    currentIdx = idx;
+    const t = tracks[idx];
+    audio.src = t.src;
+    document.getElementById('track-title').textContent = t.title;
+    document.getElementById('track-artist').textContent = t.artist || 'Berlin';
+    document.getElementById('prog-fill').style.width = '0%';
+    document.getElementById('curr-time').textContent = '0:00';
+    document.getElementById('dur-time').textContent = '0:00';
+    if (autoplay) {
+      audio.play().then(() => {
+        playing = true;
+        document.querySelector('#play-btn i').className = 'fa fa-pause';
+      }).catch(() => {});
+    }
+  }
+
+  function togglePlay() {
+    if (!tracks.length) return;
+    if (playing) { audio.pause(); playing = false; document.querySelector('#play-btn i').className = 'fa fa-play'; }
+    else         { audio.play();  playing = true;  document.querySelector('#play-btn i').className = 'fa fa-pause'; }
+  }
+  function prevTrack() { if (tracks.length) loadTrack((currentIdx - 1 + tracks.length) % tracks.length, true); }
+  function nextTrack() { if (tracks.length) loadTrack((currentIdx + 1) % tracks.length, true); }
+  function seekTrack(e) {
+    if (!audio.duration) return;
+    const r = document.getElementById('prog-bar').getBoundingClientRect();
+    audio.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * audio.duration;
+  }
+  function toggleMute() {
+    muted = !muted; audio.muted = muted;
+    document.getElementById('vol-icon').className = muted ? 'fa fa-volume-mute' : 'fa fa-volume-up';
+  }
+  audio.addEventListener('timeupdate', () => {
+    if (!audio.duration) return;
+    document.getElementById('prog-fill').style.width = (audio.currentTime / audio.duration * 100) + '%';
+    document.getElementById('curr-time').textContent = fmt(audio.currentTime);
+    document.getElementById('dur-time').textContent  = fmt(audio.duration);
+  });
+  audio.addEventListener('ended', nextTrack);
+  function fmt(s) { const t = Math.floor(s); return Math.floor(t/60)+':'+String(t%60).padStart(2,'0'); }
+  function animateViewCount() {
+    let v = 180; const el = document.getElementById('vc');
+    const iv = setInterval(() => { el.textContent = ++v; if (v >= 184) clearInterval(iv); }, 120);
+  }
+
+  const DISCORD_ID = '696451691377328139';
+  let lanyardWs = null, heartbeatIv = null;
+
+  function startLanyard() {
+    if (lanyardWs) { try { lanyardWs.close(); } catch(e){} }
+    lanyardWs = new WebSocket('wss://api.lanyard.rest/socket');
+
+    lanyardWs.onopen = () => {
+      document.getElementById('live-indicator').style.display = 'flex';
+    };
+
+    lanyardWs.onmessage = (e) => {
+      const msg = JSON.parse(e.data);
+      if (msg.op === 1) {
+        clearInterval(heartbeatIv);
+        heartbeatIv = setInterval(() => lanyardWs.send(JSON.stringify({ op: 3 })), msg.d.heartbeat_interval);
+        lanyardWs.send(JSON.stringify({ op: 2, d: { subscribe_to_id: DISCORD_ID } }));
+      }
+      if (msg.op === 0 && (msg.t === 'INIT_STATE' || msg.t === 'PRESENCE_UPDATE')) {
+        const data = msg.d[DISCORD_ID] ?? msg.d;
+        if (data) renderLanyard(data);
+      }
+    };
+
+    lanyardWs.onclose = () => {
+      document.getElementById('live-indicator').style.display = 'none';
+      clearInterval(heartbeatIv);
+      setTimeout(startLanyard, 5000); 
+    };
+
+    lanyardWs.onerror = () => {
+      fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`)
+        .then(r => r.json())
+        .then(j => { if (j.data) renderLanyard(j.data); })
+        .catch(() => { document.getElementById('dc-status-text').textContent = 'bağlanamadı'; });
+    };
+  }
+
+  const STATUS_LABELS = { online: 'Çevrimiçi', idle: 'Boşta', dnd: 'Rahatsız Etme', offline: 'Çevrimdışı' };
+  const ACTIVITY_TYPES = { 0: '<i class="fa-solid fa-gamepad"></i> Oynuyor', 1: '<i class="fa-solid fa-tv"></i> Yayın', 2: '<i class="fa-solid fa-headphones"></i> Müzik', 3: '<i class="fa-solid fa-tv"></i> İzliyor', 5: '<i class="fa-solid fa-cup"></i> Yarışıyor' };
+
+  function renderLanyard(data) {
+    const status = data.discord_status || 'offline';
+
+    ['dc-user-dot'].forEach(id => {
+      const el = document.getElementById(id);
+      el.className = el.className.replace(/\bonline\b|\bidle\b|\bdnd\b|\boffline\b/g, '').trim() + ' ' + status;
+    });
+    document.getElementById('dc-status-text').textContent = STATUS_LABELS[status] || status;
+
+    const actEl = document.getElementById('dc-activity');
+    actEl.innerHTML = '';
+
+    if (data.spotify) {
+      const sp = data.spotify;
+      actEl.innerHTML = `
+        <div class="dc-activity-type"><i class="fa-solid fa-music"></i> Spotify Dinliyor</div>
+        <div class="dc-spotify">
+          <img class="dc-spotify-art" src="${sp.album_art_url}" alt="">
+          <div class="dc-spotify-info">
+            <div class="dc-spotify-track">${esc(sp.song)}</div>
+            <div class="dc-spotify-artist">${esc(sp.artist)}</div>
+          </div>
+        </div>`;
+      return;
+    }
+
+    const acts = (data.activities || []).filter(a => a.type !== 4);
+    const custom = (data.activities || []).find(a => a.type === 4);
+
+    if (acts.length) {
+      const a = acts[0];
+      let html = `<div class="dc-activity-type">${ACTIVITY_TYPES[a.type] || 'Aktif'}</div>
+                  <div class="dc-activity-name">${esc(a.name)}</div>`;
+      if (a.details) html += `<div class="dc-activity-detail">${esc(a.details)}</div>`;
+      if (a.state)   html += `<div class="dc-activity-detail">${esc(a.state)}</div>`;
+      actEl.innerHTML = html;
+    } else if (custom) {
+      actEl.innerHTML = `
+        <div class="dc-activity-type">Durum</div>
+        <div class="dc-activity-name">${custom.emoji?.name || ''} ${esc(custom.state || '')}</div>`;
+    } else {
+      actEl.innerHTML = `<div class="dc-no-activity">Aktivite yok</div>`;
+    }
+  }
+
+  function esc(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+</script>
+</body>
+</html>
